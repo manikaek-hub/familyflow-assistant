@@ -11,12 +11,17 @@ def index():
 @app.route('/api/claude', methods=['POST'])
 def claude_api():
     try:
+        # Récupérer la clé API depuis les variables d'environnement
+        api_key = os.environ.get('ANTHROPIC_API_KEY')
+        
+        if not api_key:
+            return jsonify({'error': 'API key not configured on server'}), 500
+        
         data = request.json
-        api_key = data.get('api_key')
         messages = data.get('messages')
         
-        if not api_key or not messages:
-            return jsonify({'error': 'Missing api_key or messages'}), 400
+        if not messages:
+            return jsonify({'error': 'Missing messages'}), 400
         
         # Appel à l'API Anthropic
         response = requests.post(
