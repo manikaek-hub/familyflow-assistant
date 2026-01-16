@@ -3,86 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test FamilyFlow</title>
+    <title>FamilyFlow - Assistant Devoirs 📚</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
+        :root {
+            --cream: #FAF7F2;
+            --sand: #E8DCC4;
+            --terracotta: #C9856B;
+            --forest: #5F7161;
+            --sage: #8B9D83;
+            --clay: #B85C38;
+            --midnight: #2C3333;
+            --white: #FFFFFF;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f5f5f5;
+            font-family: 'Outfit', sans-serif;
+            background: var(--cream);
+            color: var(--midnight);
+            min-height: 100vh;
         }
-        .header {
-            background: linear-gradient(135deg, #5F7161, #8B9D83);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
+        
+        header {
+            background: linear-gradient(135deg, var(--forest) 0%, var(--sage) 100%);
+            padding: 2rem;
             text-align: center;
-            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
-        .test-box {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            color: var(--white);
+            font-weight: 700;
+            font-style: italic;
+            margin-bottom: 0.5rem;
         }
-        .success {
-            background: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
+        
+        .tagline {
+            color: var(--cream);
+            font-size: 1rem;
+            opacity: 0.9;
         }
-        button {
-            background: #5F7161;
-            color: white;
-            padding: 15px 30px;
-            border: none;
+        
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            background: var(--white);
             border-radius: 25px;
-            font-size: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            height: fit-content;
+        }
+        
+        .mode-switch {
+            background: var(--cream);
+            border-radius: 50px;
+            padding: 0.3rem;
+            display: flex;
+            gap: 0.3rem;
+            margin-bottom: 2rem;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            background: transparent;
+            border-radius: 50px;
             cursor: pointer;
-            margin-top: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s;
         }
-        button:hover {
-            background: #4a5a4d;
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--forest), var(--sage));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(95, 113, 97, 0.3);
         }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
+        
+        .child-select {
+            margin-bottom: 2rem;
+        }
+        
+        .child-select label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            color: var(--forest);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+        
+        .child-select select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid var(--sand);
+            border-radius: 15px;
+            font-family: 'Outfit', sans-serif;
+            background: var(--cream);
+            cursor: pointer;
+        }
+        
+        .stats {
+            background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(155, 89, 182, 0.1));
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--sage);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--forest);
+        }
+        
+        .badges {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+        
+        .badge {
+            aspect-ratio: 1;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            background: var(--sand);
+            transition: transform 0.3s;
+        }
+        
+        .badge.earned {
+            background: linear-gradient(135deg, #F39C12, #E67E22);
+        }
+        
+        .main-content {
+            background: var(--white);
+            border-radius: 25px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            color: var(--forest);
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid var(--sand);
+            font-style: italic;
+        }
+        
+        .upload-zone {
+            border: 3px dashed var(--sand);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            background: var(--cream);
+        }
+        
+        .upload-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1.5rem;
+            border: 2px solid var(--sand);
+            border-radius: 20px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.1rem;
+            background: var(--cream);
+            resize: vertical;
+            margin-bottom: 2rem;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--terracotta);
+            background: var(--white);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--forest), var(--sage));
+            color: var(--white);
+            box-shadow: 0 8px 25px rgba(95, 113, 97, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn-secondary {
+            background: var(--sand);
+            color: var(--midnight);
+        }
+        
+        .chat-container {
             display: none;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-container.active {
+            display: flex;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            background: var(--cream);
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+        
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--forest), var(--sage));
+        }
+        
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, var(--terracotta), var(--clay));
+        }
+        
+        .message-content {
+            flex: 1;
+            background: var(--white);
+            padding: 1rem 1.5rem;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            line-height: 1.6;
+        }
+        
+        .message.user .message-content {
+            background: linear-gradient(135deg, rgba(201, 133, 107, 0.1), rgba(184, 92, 56, 0.1));
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--sand);
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            background: var(--cream);
+        }
+        
+        .chat-input button {
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--forest), var(--sage));
+            color: var(--white);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: flex;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--sage);
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        
+        @media (max-width: 968px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🧪 Test FamilyFlow</h1>
-        <p>Version de diagnostic</p>
-    </div>
+    <header>
+        <h1>📚 Assistant Devoirs</h1>
+        <p class="tagline">Intelligence artificielle Claude pour vos enfants</p>
+    </header>
     
-    <div class="test-box">
-        <h2>✅ Si vous voyez ceci bien formaté, c'est bon signe !</h2>
-        
-        <div class="success">
-            <strong>✓ HTML chargé</strong><br>
-            <strong>✓ CSS chargé</strong><br>
-            <strong>✓ Structure Flask OK</strong>
+    <div class="container">
+        <div class="sidebar">
+            <div class="mode-switch">
+                <button class="mode-btn active" data-mode="parent">👨‍👩‍👧 Parent</button>
+                <button class="mode-btn" data-mode="child">🎮 Enfant</button>
+            </div>
+            
+            <div class="child-select">
+                <label>Enfant</label>
+                <select id="childSelect">
+                    <option value="gauthier">Gauthier (4e)</option>
+                    <option value="charles">Charles (6e)</option>
+                    <option value="victoire">Victoire (CE1)</option>
+                </select>
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Devoirs</span>
+                    <span class="stat-value" id="statDevoirs">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Messages</span>
+                    <span class="stat-value" id="statMessages">0</span>
+                </div>
+            </div>
+            
+            <h4 style="font-family: 'Playfair Display', serif; color: var(--forest); margin-bottom: 1rem;">🏆 Badges</h4>
+            <div class="badges">
+                <div class="badge">📖</div>
+                <div class="badge">⭐</div>
+                <div class="badge">🔥</div>
+                <div class="badge">💬</div>
+                <div class="badge">🎓</div>
+                <div class="badge">🏆</div>
+            </div>
         </div>
         
-        <h3>Test de l'API Claude</h3>
-        <p>Cliquez sur le bouton pour vérifier que l'API fonctionne :</p>
-        
-        <button onclick="testAPI()">🚀 Tester l'API</button>
-        
-        <div id="result"></div>
+        <div class="main-content">
+            <h2 class="section-title" id="mainTitle">Nouvelle Leçon</h2>
+            
+            <div id="uploadSection">
+                <div class="upload-zone">
+                    <div class="upload-icon">📸</div>
+                    <div style="font-size: 1.2rem; font-weight: 600; color: var(--forest); margin-bottom: 0.5rem;">
+                        Photo de la leçon
+                    </div>
+                    <div style="color: var(--sage);">ou tapez ci-dessous</div>
+                </div>
+                
+                <textarea id="lessonText" placeholder="Tapez la leçon ici..."></textarea>
+                
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="resetLesson()">🔄 Reset</button>
+                    <button class="btn btn-primary" id="analyzeBtn" onclick="analyzeLesson()">✨ Analyser</button>
+                </div>
+            </div>
+            
+            <div class="chat-container" id="chatContainer">
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input">
+                    <input type="text" id="messageInput" placeholder="Question...">
+                    <button id="sendBtn" onclick="sendMessage()">Envoyer</button>
+                </div>
+                <button class="btn btn-secondary" style="margin-top: 1rem;" onclick="resetLesson()">🔄 Nouvelle leçon</button>
+            </div>
+        </div>
     </div>
     
     <script>
-        async function testAPI() {
-            const resultDiv = document.getElementById('result');
-            resultDiv.style.display = 'block';
-            resultDiv.innerHTML = '⏳ Test en cours...';
+        let currentMode = 'parent';
+        let currentChild = 'gauthier';
+        let currentLesson = null;
+        let conversationHistory = [];
+        let stats = { devoirs: 0, messages: 0 };
+        
+        const childrenInfo = {
+            gauthier: { name: 'Gauthier', level: '4e', age: 13 },
+            charles: { name: 'Charles', level: '6e', age: 11 },
+            victoire: { name: 'Victoire', level: 'CE1', age: 7 }
+        };
+        
+        // Initialisation
+        function init() {
+            loadStats();
+            setupEventListeners();
+        }
+        
+        function setupEventListeners() {
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentMode = this.dataset.mode;
+                    updateTitle();
+                });
+            });
+            
+            document.getElementById('childSelect').addEventListener('change', function() {
+                currentChild = this.value;
+                loadStats();
+            });
+            
+            document.getElementById('messageInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendMessage();
+            });
+        }
+        
+        function updateTitle() {
+            const title = document.getElementById('mainTitle');
+            if (document.getElementById('chatContainer').classList.contains('active')) {
+                title.textContent = currentMode === 'parent' ? 'Mode Parent' : 'Mode Enfant';
+            } else {
+                title.textContent = 'Nouvelle Leçon';
+            }
+        }
+        
+        async function analyzeLesson() {
+            const lessonText = document.getElementById('lessonText').value.trim();
+            
+            if (!lessonText) {
+                alert('Veuillez entrer une leçon');
+                return;
+            }
+            
+            currentLesson = lessonText;
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('chatContainer').classList.add('active');
+            updateTitle();
+            
+            const child = childrenInfo[currentChild];
+            const userMsg = currentMode === 'parent'
+                ? 'Je suis parent. Mon enfant ' + child.name + ' (' + child.level + ') doit etudier: ' + lessonText + '. Suggere-moi des questions pour l\'interroger.'
+                : 'Je suis ' + child.name + ' (' + child.level + '). Voici ma lecon: ' + lessonText + '. Explique-moi simplement.';
+            
+            addMessage('user', userMsg);
+            addLoadingMessage();
             
             try {
                 const response = await fetch('/api/claude', {
@@ -91,33 +519,151 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        messages: [{
-                            role: 'user',
-                            content: 'Dis bonjour en une phrase'
-                        }]
+                        messages: [{ role: 'user', content: userMsg }]
                     })
                 });
                 
+                removeLoadingMessage();
+                
                 if (!response.ok) {
-                    throw new Error('HTTP ' + response.status);
+                    const error = await response.text();
+                    throw new Error('Erreur API: ' + response.status);
                 }
                 
                 const data = await response.json();
-                const text = data.content[0].text;
+                const assistantMsg = data.content[0].text;
                 
-                resultDiv.innerHTML = '<strong>✅ API FONCTIONNE !</strong><br><br>' +
-                    '<strong>Réponse de Claude :</strong><br>' + text;
-                resultDiv.style.background = '#d4edda';
-                resultDiv.style.color = '#155724';
+                addMessage('assistant', assistantMsg);
+                conversationHistory.push({ role: 'user', content: userMsg });
+                conversationHistory.push({ role: 'assistant', content: assistantMsg });
+                
+                stats.devoirs++;
+                saveStats();
+                updateStats();
                 
             } catch (error) {
-                resultDiv.innerHTML = '<strong>❌ ERREUR</strong><br><br>' +
-                    error.message + '<br><br>' +
-                    'Vérifiez la variable ANTHROPIC_API_KEY dans Render';
-                resultDiv.style.background = '#f8d7da';
-                resultDiv.style.color = '#721c24';
+                removeLoadingMessage();
+                addMessage('assistant', 'Erreur: ' + error.message);
             }
         }
+        
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            input.value = '';
+            addMessage('user', message);
+            conversationHistory.push({ role: 'user', content: message });
+            
+            addLoadingMessage();
+            
+            try {
+                const response = await fetch('/api/claude', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messages: conversationHistory
+                    })
+                });
+                
+                removeLoadingMessage();
+                
+                if (!response.ok) throw new Error('Erreur API: ' + response.status);
+                
+                const data = await response.json();
+                const assistantMsg = data.content[0].text;
+                
+                addMessage('assistant', assistantMsg);
+                conversationHistory.push({ role: 'assistant', content: assistantMsg });
+                
+                stats.messages++;
+                saveStats();
+                updateStats();
+                
+            } catch (error) {
+                removeLoadingMessage();
+                addMessage('assistant', 'Erreur: ' + error.message);
+            }
+        }
+        
+        function addMessage(sender, content) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ' + sender;
+            
+            const avatar = sender === 'assistant' ? '🤖' : (currentMode === 'parent' ? '👨‍👩‍👧' : '🎮');
+            
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${content.replace(/\n/g, '<br>')}</div>
+            `;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function addLoadingMessage() {
+            const messagesDiv = document.getElementById('chatMessages');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message assistant';
+            loadingDiv.id = 'loading-message';
+            
+            loadingDiv.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="loading">
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                        <div class="loading-dot"></div>
+                    </div>
+                </div>
+            `;
+            
+            messagesDiv.appendChild(loadingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+        
+        function removeLoadingMessage() {
+            const loadingMsg = document.getElementById('loading-message');
+            if (loadingMsg) loadingMsg.remove();
+        }
+        
+        function resetLesson() {
+            document.getElementById('lessonText').value = '';
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('chatContainer').classList.remove('active');
+            document.getElementById('chatMessages').innerHTML = '';
+            conversationHistory = [];
+            currentLesson = null;
+            updateTitle();
+        }
+        
+        function loadStats() {
+            const saved = localStorage.getItem('homework-stats-' + currentChild);
+            if (saved) stats = JSON.parse(saved);
+            updateStats();
+        }
+        
+        function saveStats() {
+            localStorage.setItem('homework-stats-' + currentChild, JSON.stringify(stats));
+        }
+        
+        function updateStats() {
+            document.getElementById('statDevoirs').textContent = stats.devoirs;
+            document.getElementById('statMessages').textContent = stats.messages;
+            
+            const badges = document.querySelectorAll('.badge');
+            if (stats.devoirs >= 1) badges[0].classList.add('earned');
+            if (stats.messages >= 10) badges[1].classList.add('earned');
+            if (stats.devoirs >= 5) badges[2].classList.add('earned');
+            if (stats.messages >= 20) badges[3].classList.add('earned');
+        }
+        
+        init();
     </script>
 </body>
 </html>
